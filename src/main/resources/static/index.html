@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <style>
+        .main-container{
+            background-color: #c3c3c3;
+            margin: 30px 5px 0px 5px;
+            padding: 20px 50px;
+            width: 300px;
+        }
+        .app-title {
+            font-size: 18px;
+            color: blueviolet;
+            padding: 10px;
+        }
+        #search-button {
+            margin: 15px;
+        }
+        .table-title {
+            margin: 10px 0;
+            font-size: 18px;
+            border-bottom: 1px solid white;
+            width: 300px;
+        }
+        .table-border-bottom-white {
+            border-bottom: 1px solid white;
+            margin: 5px 0;
+        }
+        .error-messages {
+                color: red;
+                margin: 0 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        $(document).ready(function(){
+            $(".weather-result").hide();
+            $("#search-button").click(function(){
+                var country = $("#country-selection").val();
+                if (country != null && country != undefined) {
+                    $.ajax({
+                        url: "http://localhost:8080/weather/" + country,
+                        success: function(data){
+                            $(".weather-result").show();
+                            $("#current-date").html(data.currentDate);
+                            $("#city-name").html(data.cityName);
+                            $("#description").html(data.description);
+                            $("#celsius").html(data.fahrenheitTemp);
+                            $("#fahrenheit").html(data.celciusTemp);
+                            $("#sunrise").html(data.sunrise);
+                            $("#sunset").html(data.sunset);
+                        },
+                        error: function(err, ajaxOptions, thrownError) {
+                            $(".error-messages").html(err.responseJSON.message);
+                        }
+                    });
+                } else {
+                    $(".error-messages").append("Select a country");
+                }
+            })
+        });
+    </script>
+    <div class="main-container">
+        <div class="header">
+            <div class="app-title">Weather App</div>
+        </div>
+        <div class="country-selection">
+            <div class="error-messages"></div>
+            <div class="form-section">
+                <span>Select the country: </span>
+                <select id="country-selection">
+                    <option value="London">London</option>
+                    <option value="Hong+Kong">Hong Kong</option>
+                </select>
+                <br />
+                <button id="search-button">Search</button>
+            </div>
+        </div>
+        <div class="weather-result">
+            <div class="weather-table">
+                <div class="table-title">The weather for the country selected is</div>
+                <div class="weather-current-date table-border-bottom-white">Date: <span id="current-date"></span> </div>
+                <div class="weather-city-name table-border-bottom-white">City: <span id="city-name"></span> </div>
+                <div class="weather-description table-border-bottom-white">Description: <span id="description"></span> </div>
+                <div class="weather-celsius-temp table-border-bottom-white">Temp &deg;C: <span id="celsius"></span> &deg;C</div>
+                <div class="weather-celsius-temp table-border-bottom-white">Temp &deg;F: <span id="fahrenheit"></span> &deg;F</div>
+                <div class="weather-sunrise table-border-bottom-white">Sunrise: <span id="sunrise"></span> </div>
+                <div class="weather-sunset">Sunset: <span id="sunset"></span> </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
